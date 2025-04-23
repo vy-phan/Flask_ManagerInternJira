@@ -7,3 +7,5 @@ from .user import User
 from .role import UserRole
 from .task_detail import Task_Detail  
 from .task_attachment import TaskAttachment
+from .task_detail_assignees import Task_Detail_Assignees  
+

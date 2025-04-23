@@ -1,13 +1,17 @@
 from .interfaces.task_detail_service import ITaskDetailService
 from ..repositories.interfaces.task_detail_repository import ITaskDetailRepository
 from ..repositories.task_detail_repository import TaskDetailRepository
-from ..models import Task_Detail, Task
+from ..models import db,Task_Detail, Task
+from ..models.task_detail_assignees import Task_Detail_Assignees
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+from ..repositories.user_repository import UserRepository
+from ..repositories.task_detail_assignee_repository import TaskDetailAssigneeRepository
 
 class TaskDetailService(ITaskDetailService):
     def __init__(self, task_detail_repository: ITaskDetailRepository = None):
         self.task_detail_repository = task_detail_repository or TaskDetailRepository()
+        self.task_detail_assignee_repository = TaskDetailAssigneeRepository()  # New repository
     
     def _format_task_detail_data(self, detail: Task_Detail) -> Dict[str, Any]:
         return {
@@ -40,6 +44,7 @@ class TaskDetailService(ITaskDetailService):
             title = data.get('title')
             description = data.get('description', '')
             status = data.get('status', 'Đã giao')
+            assignees = data.get('assignees', [])  # List of usernames
 
             if not all([task_id, title]):
                 raise ValueError("Các trường task_id và title là bắt buộc")
@@ -58,10 +63,26 @@ class TaskDetailService(ITaskDetailService):
                 updated_at=datetime.utcnow()
             )
 
-            created = self.task_detail_repository.create(new_detail)
-            return self._format_task_detail_data(created)
+            # Save Task_Detail
+            created_detail = self.task_detail_repository.create(new_detail)
+
+            # Save Task_Detail_Assignees
+            user_repo = UserRepository()
+            for username in assignees:
+                user = user_repo.get_by_username(username)
+                if not user:
+                    raise LookupError(f"User với username '{username}' không tồn tại")
+                new_assignee = Task_Detail_Assignees(
+                    task_detail_id=created_detail.id,
+                    user_id=user.id,
+                    assigned_at=datetime.utcnow()
+                )
+                self.task_detail_assignee_repository.create(new_assignee)
+
+            return self._format_task_detail_data(created_detail)
         
         except Exception as e:
+            db.session.rollback()
             raise Exception(f"Lỗi khi tạo task detail: {str(e)}")
 
     def update(self, detail_id: int, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -85,8 +106,39 @@ class TaskDetailService(ITaskDetailService):
         except Exception as e:
             raise Exception(f"Lỗi khi cập nhật task detail: {str(e)}")
 
+
+    def update_status(self, detail_id: int, status: str) -> Dict[str, Any]:
+        try:
+            valid_statuses = ['Đã giao', 'Đang thực hiện', 'Hoàn thành']
+            if status not in valid_statuses:
+                raise ValueError(f"Invalid status. Must be one of: {valid_statuses}")
+
+            detail = self.task_detail_repository.get_by_id(detail_id)
+            if not detail:
+                return None
+
+            detail.status = status
+            detail.updated_at = datetime.utcnow()
+
+            updated = self.task_detail_repository.update(detail)
+            return self._format_task_detail_data(updated)
+        except Exception as e:
+            raise Exception(f"Lỗi khi cập nhật trạng thái task detail: {str(e)}")
+
+
     def delete(self, detail_id: int) -> bool:
         try:
+            # Get the task detail by ID
+            detail = self.task_detail_repository.get_by_id(detail_id)
+            if not detail:
+                return False
+
+            # Delete related task_detail_assignees
+            assignees = self.task_detail_assignee_repository.get_by_task_detail_id(detail_id)
+            for assignee in assignees:
+                self.task_detail_assignee_repository.delete(assignee.id)
+
+            # Delete the task detail
             return self.task_detail_repository.delete(detail_id)
         except Exception as e:
             raise Exception(f"Lỗi khi xóa task detail: {str(e)}")

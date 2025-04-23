@@ -11,7 +11,8 @@ task_service = TaskService()
 @task_bp.route('/', methods=['GET'])
 def get_all_tasks():
     try:
-        tasks = task_service.get_all()
+        tasks = task_service.get_all()  
+
         return jsonify({
             'success': True,
             'data': tasks
@@ -69,7 +70,7 @@ def create_task():
         for field in required_fields:
             if field not in data or not data[field]:
                 return jsonify({
-                    'success': False,
+                    'success': False, 
                     'error': f'Missing required field: {field}'
                 }), 400
 
@@ -83,16 +84,26 @@ def create_task():
             }), 400
 
         # Validate status
-        valid_statuses = ['Đã giao', 'Đang thực hiện', 'Đã hoàn thành']
+        valid_statuses = ['assigned', 'in_progress', 'completed']
         if 'status' in data and data['status'] not in valid_statuses:
             return jsonify({
                 'success': False,
                 'error': f'Invalid status. Must be one of: {valid_statuses}'
             }), 400
-            
-
-        # Create task or not attachments
         new_task = task_service.create(data, file_paths)
+
+        # Map English status to Vietnamese
+        status_mapping = {
+            'assigned': 'Đã giao',
+            'in_progress': 'Đang thực hiện',
+            'completed': 'Đã hoàn thành'
+        }
+        
+        if 'status' in data:
+            data['status'] = status_mapping.get(data['status'], 'Đã giao')
+
+        # Create task using service
+        new_task = task_service.create(data)  # Changed from create_task()
         if not new_task:
             return jsonify({
                 'success': False,
@@ -118,6 +129,7 @@ def update_task(task_id):
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
+
         # Validate deadline format if provided
         if 'deadline' in data:
             try:
@@ -135,7 +147,6 @@ def update_task(task_id):
                 'success': False,
                 'error': f'Invalid status. Must be one of: {valid_statuses}'
             }), 400
-
         updated_task = task_service.update(task_id, data)
         if not updated_task:
             return jsonify({

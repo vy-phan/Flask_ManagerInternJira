@@ -35,7 +35,7 @@ class TaskService(ITaskService):
         tasks = self.task_repository.get_all()
         return [self._format_task_data(task) for task in tasks]
     
-    def get_by_id(self, task_id: int) -> Optional[Dict[str, Any]]:
+    def get_by_id(self, task_id: int) -> Optional[Dict[str, Any]]:  # Changed from get_task_by_id
         """Get a task by ID with formatted data"""
         task = self.task_repository.get_by_id(task_id)
         if not task:
@@ -70,6 +70,7 @@ class TaskService(ITaskService):
                 created_by=data['created_by']
             )
             
+
             # Save task to database
             created_task = self.task_repository.create(new_task)
 
@@ -90,7 +91,7 @@ class TaskService(ITaskService):
             task = self.task_repository.get_by_id(task_id)
             if not task:
                 raise ValueError(f"Task with ID {task_id} not found")
-            
+
             # Convert English status to Vietnamese if needed
             status_map = {
                 'assigned': 'Đã giao',
@@ -115,6 +116,9 @@ class TaskService(ITaskService):
             if 'deadline' in data:
                 task.deadline = datetime.fromisoformat(data['deadline'])
             if 'status' in data:
+                valid_statuses = ['Đã giao', 'Đang thực hiện', 'Đã hoàn thành']
+                if data['status'] not in valid_statuses:
+                    raise ValueError(f"Invalid status. Must be one of: {valid_statuses}")
                 task.status = data['status']
             if 'created_by' in data:
                 task.created_by = data['created_by']
@@ -126,7 +130,8 @@ class TaskService(ITaskService):
         except Exception as e:
             raise Exception(f"Error updating task: {str(e)}")
     
-    def delete(self, task_id: int) -> bool:
+
+    def delete(self, task_id: int) -> bool:  # Changed from delete_task
         """Delete a task by ID"""
         try:
             return self.task_repository.delete(task_id)

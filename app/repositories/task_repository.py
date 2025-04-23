@@ -1,6 +1,7 @@
 from .interfaces.task_repository import ITaskRepository
 from ..models import db, Task, TaskAttachment
 from typing import List, Optional
+import os
 
 class TaskRepository(ITaskRepository):
     def get_all(self) -> List[Task]:  # Changed from get_all_tasks
@@ -34,7 +35,7 @@ class TaskRepository(ITaskRepository):
         except Exception as e:
             db.session.rollback()
             raise e
-    
+
     def update(self, task: Task) -> Task:  # Changed from update_task
         """Update an existing task"""
         try:
@@ -44,8 +45,9 @@ class TaskRepository(ITaskRepository):
             db.session.rollback()
             raise e
     
-    def delete(self, task_id: int) -> bool:
-        """Delete a task by ID and its attachments"""
+
+    def delete(self, task_id: int) -> bool:  
+        """Delete a task by ID"""
         task = self.get_by_id(task_id)
         if not task:
             return False

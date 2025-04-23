@@ -36,11 +36,12 @@ def create_app(config_class=Config):
     configure_logging(app)
     api = Api(app)
     
-    # API cha để chứa các API con
+
+    # api cha để chứa các api con
     from app.routes import api_bp  
     app.register_blueprint(api_bp, url_prefix='/api')
     
-    # Error handlers (xử lý lỗi) xử lý các lỗi 404, 500
+    # Error handlers ( xử lí lỗi ) xử lý các lỗi 404, 500
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
@@ -57,10 +58,13 @@ def create_app(config_class=Config):
     
     return app
 
-# Configures the logging (log ra mọi kết quả)
+
+
+# Configures the logging ( log ra mọi kết quả )
 def configure_logging(app):
     handler = TimedRotatingFileHandler('flask-template.log', when='midnight', interval=1, backupCount=10)
     handler.setLevel(logging.INFO) 
     formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
+

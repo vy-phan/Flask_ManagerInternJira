@@ -33,26 +33,28 @@
 *   **ORM:** SQLAlchemy
 *   **Quản lý Môi trường:** Virtualenv, tệp `.env`
 
+
+
+```markdown
 Flask_Backend_ThucTapSinh/
-│
-├── app/ # Gói ứng dụng chính
-│ ├── init.py # Application factory, đăng ký blueprint
-│ ├── models/ # Các model cơ sở dữ liệu (ví dụ: User, Task, TaskDetail)
-│ ├── public/ # Tài nguyên tĩnh (CSS, JS, ảnh) - Lưu ý: Đổi tên nếu cần
-│ ├── repositories/ # Lớp truy cập dữ liệu (tương tác với models)
-│ ├── routes/ # Các route/controller của ứng dụng (Blueprint thường được định nghĩa ở đây)
-│ └── services/ # Lớp logic nghiệp vụ
-│
-├── venv/ # Môi trường ảo (thường được git bỏ qua)
-├── .env # Biến môi trường (dữ liệu nhạy cảm, bị git bỏ qua)
-├── .env.example # Mẫu tệp biến môi trường
-├── .flaskenv # Biến môi trường dành riêng cho Flask (ví dụ: FLASK_APP, FLASK_ENV)
-├── .gitignore # Quy tắc bỏ qua của Git
-├── app.py # Điểm khởi chạy chính của ứng dụng (import và chạy app factory)
-├── config.py # (Các) lớp chứa cài đặt cấu hình
-├── flask-template.log # Tệp log của ứng dụng (ví dụ)
-├── README.md # Tệp này
-└── requirements.txt # Các thư viện Python phụ thuộc của dự án
+├── app/                  # Gói ứng dụng chính
+│   ├── __init__.py       # Application factory, đăng ký blueprint
+│   ├── models/           # Các model cơ sở dữ liệu (ví dụ: User, Task, TaskDetail)
+│   ├── public/           # Tài nguyên tĩnh ( ảnh) 
+│   ├── repositories/     # Lớp truy cập dữ liệu (tương tác với models)
+│   ├── routes/           # Các route của ứng dụng (Blueprint thường được định nghĩa ở đây)
+│   └── services/         # Lớp logic nghiệp vụ
+├── venv/                 # Môi trường ảo (thường được git bỏ qua)
+├── .env                  # Biến môi trường 
+├── .env.example          # Mẫu tệp biến môi trường
+├── .flaskenv             # Biến môi trường dành riêng cho Flask (ví dụ: FLASK_APP, FLASK_ENV)
+├── .gitignore            # Quy tắc bỏ qua của Git
+├── app.py                # Điểm khởi chạy chính của ứng dụng (import và chạy app factory)
+├── config.py             # (Các) lớp chứa cài đặt cấu hình
+├── flask-template.log    # Tệp log của ứng dụng 
+├── README.md             # Tệp này
+└── requirements.txt      # Các thư viện Python phụ thuộc của dự án
+```
 
 
 ## Cấu Trúc Dự Án
