@@ -33,26 +33,26 @@
 *   **ORM:** SQLAlchemy
 *   **Quản lý Môi trường:** Virtualenv, tệp `.env`
 
-```text
+```markdown
 Flask_Backend_ThucTapSinh/
 ├── app/                  # Gói ứng dụng chính
 │   ├── __init__.py       # Application factory, đăng ký blueprint
 │   ├── models/           # Các model cơ sở dữ liệu (ví dụ: User, Task, TaskDetail)
-│   ├── public/           # Tài nguyên tĩnh (CSS, JS, ảnh) - Lưu ý: Đổi tên nếu cần
+│   ├── public/           # Tài nguyên tĩnh ( ảnh) 
 │   ├── repositories/     # Lớp truy cập dữ liệu (tương tác với models)
-│   ├── routes/           # Các route/controller của ứng dụng (Blueprint thường được định nghĩa ở đây)
+│   ├── routes/           # Các route của ứng dụng (Blueprint thường được định nghĩa ở đây)
 │   └── services/         # Lớp logic nghiệp vụ
 ├── venv/                 # Môi trường ảo (thường được git bỏ qua)
-├── .env                  # Biến môi trường (dữ liệu nhạy cảm, bị git bỏ qua)
+├── .env                  # Biến môi trường 
 ├── .env.example          # Mẫu tệp biến môi trường
 ├── .flaskenv             # Biến môi trường dành riêng cho Flask (ví dụ: FLASK_APP, FLASK_ENV)
 ├── .gitignore            # Quy tắc bỏ qua của Git
 ├── app.py                # Điểm khởi chạy chính của ứng dụng (import và chạy app factory)
 ├── config.py             # (Các) lớp chứa cài đặt cấu hình
-├── flask-template.log    # Tệp log của ứng dụng (ví dụ)
+├── flask-template.log    # Tệp log của ứng dụng 
 ├── README.md             # Tệp này
 └── requirements.txt      # Các thư viện Python phụ thuộc của dự án
-```text
+```
 
 ## Cấu Trúc Dự Án
 *(Lưu ý: Đảm bảo `app.py` được thiết lập đúng là điểm khởi chạy, hoặc điều chỉnh mô tả nếu bạn sử dụng tệp khác như `run.py` hoặc `wsgi.py`. Thư mục `public` trong cấu trúc của bạn có thể dùng cho static files, hãy kiểm tra lại cách bạn tổ chức file tĩnh)*
