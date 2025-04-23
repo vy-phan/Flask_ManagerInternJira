@@ -124,6 +124,7 @@ class TaskDetailService(ITaskDetailService):
         except Exception as e:
             raise Exception(f"Lỗi khi cập nhật trạng thái task detail: {str(e)}")
 
+
     def delete(self, detail_id: int) -> bool:
         try:
             # Get the task detail by ID

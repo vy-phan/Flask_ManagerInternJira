@@ -15,6 +15,11 @@ class UserRepository(IUserRepository):
         """Get a user by username"""
         return User.query.filter_by(username=username).first()
     
+
+    def get_by_email(self, email: str) -> Optional[User]:
+        """Get a user by email"""
+        return User.query.filter_by(email=email).first()
+    
     # Add error handling for database operations
     def create(self, user: User) -> User:
         try:

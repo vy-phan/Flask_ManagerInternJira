@@ -1,5 +1,7 @@
 from . import db
-from .role import UserRole  # Changed from .app.models.role to .role
+from .role import UserRole  
+from enum import Enum
+
 
 class User(db.Model):
     __tablename__ = 'users'
