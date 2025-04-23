@@ -52,7 +52,7 @@ Flask_Backend_ThucTapSinh/
 ├── flask-template.log    # Tệp log của ứng dụng (ví dụ)
 ├── README.md             # Tệp này
 └── requirements.txt      # Các thư viện Python phụ thuộc của dự án
-
+```text
 
 ## Cấu Trúc Dự Án
 *(Lưu ý: Đảm bảo `app.py` được thiết lập đúng là điểm khởi chạy, hoặc điều chỉnh mô tả nếu bạn sử dụng tệp khác như `run.py` hoặc `wsgi.py`. Thư mục `public` trong cấu trúc của bạn có thể dùng cho static files, hãy kiểm tra lại cách bạn tổ chức file tĩnh)*
