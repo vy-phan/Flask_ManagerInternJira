@@ -108,6 +108,7 @@ class UserService(IUserService):
         """Delete a user by ID"""
         return self.user_repository.delete(id)
 
+
     def verify_credentials(self, email: str, password: str) -> bool:
         """Verify user credentials"""
         user = self.user_repository.get_by_email(email)
@@ -117,4 +118,5 @@ class UserService(IUserService):
         password_bytes = password.encode('utf-8')
         hashed_password = user.password_hash.encode('utf-8')
         return bcrypt.checkpw(password_bytes, hashed_password)
+
     

@@ -74,3 +74,16 @@ def delete_task_detail(task_detail_id):
         return jsonify({'success': False, 'error': str(e)}), 404
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@task_detail_bp.route('/<int:task_detail_id>/status/<string:status>', methods=['PATCH'])
+def update_task_detail_status(task_detail_id, status):
+    try:
+        updated = task_detail_service.update_status(task_detail_id, status)
+        if not updated:
+            return jsonify({'success': False, 'error': f'Task detail {task_detail_id} not found'}), 404
+
+        return jsonify({'success': True, 'message': 'Task detail status updated successfully', 'data': updated}), 200
+    except ValueError as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500

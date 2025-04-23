@@ -106,6 +106,25 @@ class TaskDetailService(ITaskDetailService):
         except Exception as e:
             raise Exception(f"Lỗi khi cập nhật task detail: {str(e)}")
 
+    def update_status(self, detail_id: int, status: str) -> Dict[str, Any]:
+        try:
+            valid_statuses = ['Đã giao', 'Đang thực hiện', 'Hoàn thành']
+            if status not in valid_statuses:
+                raise ValueError(f"Invalid status. Must be one of: {valid_statuses}")
+
+            detail = self.task_detail_repository.get_by_id(detail_id)
+            if not detail:
+                return None
+
+            detail.status = status
+            detail.updated_at = datetime.utcnow()
+
+            updated = self.task_detail_repository.update(detail)
+            return self._format_task_detail_data(updated)
+        except Exception as e:
+            raise Exception(f"Lỗi khi cập nhật trạng thái task detail: {str(e)}")
+
+
     def delete(self, detail_id: int) -> bool:
         try:
             # Get the task detail by ID

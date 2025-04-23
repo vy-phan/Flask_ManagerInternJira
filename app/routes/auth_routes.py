@@ -1,3 +1,4 @@
+
 from flask import Blueprint, jsonify, request
 from ..services.user_service import UserService
 
@@ -30,6 +31,6 @@ def login():
 @auth_bp.route('/logout/', methods=['POST'])
 def logout():
     return jsonify({
-        'success': True,
-        'message': 'Logout successful'
-    }), 200
+           'success': True,
+           'message': 'Logout successful'
+        }), 200

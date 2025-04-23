@@ -2,6 +2,7 @@ from . import db
 from .role import UserRole  
 from enum import Enum
 
+
 class User(db.Model):
     __tablename__ = 'users'
     
