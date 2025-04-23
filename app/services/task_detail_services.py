@@ -1,12 +1,12 @@
 from .interfaces.task_detail_service import ITaskDetailService
 from ..repositories.interfaces.task_detail_repository import ITaskDetailRepository
-from ..repositories.task_detail_repository import TaskDetailRepository
-from ..models import db,Task_Detail, Task
+from ..models import db, Task_Detail, Task  
 from ..models.task_detail_assignees import Task_Detail_Assignees
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from ..repositories.user_repository import UserRepository
 from ..repositories.task_detail_assignee_repository import TaskDetailAssigneeRepository
+from ..repositories.task_detail_repository import TaskDetailRepository  
 
 class TaskDetailService(ITaskDetailService):
     def __init__(self, task_detail_repository: ITaskDetailRepository = None):

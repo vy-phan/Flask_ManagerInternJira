@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
-from ..services import task_detail_services
+from ..services import TaskDetailService
 
 task_detail_bp = Blueprint('task_detail', __name__, url_prefix='/task_detail')
-task_detail_service = task_detail_services.TaskDetailService()
+task_detail_service = TaskDetailService()
 
 @task_detail_bp.route('/', methods=['GET'])
 def get_all_task_details():
