@@ -11,6 +11,7 @@ class UserRepository(IUserRepository):
         """Get a user by ID"""
         return User.query.get(user_id)
     
+
     def get_by_username(self, username: str) -> Optional[User]:
         """Get a user by username"""
         return User.query.filter_by(username=username).first()

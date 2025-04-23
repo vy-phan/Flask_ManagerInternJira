@@ -1,6 +1,7 @@
 from .interfaces.task_repository import ITaskRepository
-from ..models import db, Task
+from ..models import db, Task, TaskAttachment
 from typing import List, Optional
+import os
 
 class TaskRepository(ITaskRepository):
     def get_all(self) -> List[Task]:  # Changed from get_all_tasks
@@ -20,7 +21,21 @@ class TaskRepository(ITaskRepository):
         except Exception as e:
             db.session.rollback()
             raise e
-    
+        
+    def create_attachment(self, task_id: int, file_path: str) -> TaskAttachment:
+        """Create a new attachment for a task"""
+        try:
+            attachment = TaskAttachment(
+                task_id=task_id,
+                file_path=file_path
+            )
+            db.session.add(attachment)
+            db.session.commit()
+            return attachment
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
     def update(self, task: Task) -> Task:  # Changed from update_task
         """Update an existing task"""
         try:
@@ -30,13 +45,22 @@ class TaskRepository(ITaskRepository):
             db.session.rollback()
             raise e
     
-    def delete(self, task_id: int) -> bool:  # Changed from delete_task
+
+    def delete(self, task_id: int) -> bool:  
         """Delete a task by ID"""
         task = self.get_by_id(task_id)
         if not task:
             return False
         
         try:
+            # Xóa các tệp đính kèm (cả bản ghi trong DB và tệp vật lý nếu cần)
+            for attachment in task.attachments:
+                # Xóa tệp vật lý (tùy chọn)
+                if os.path.exists(attachment.file_path):
+                    os.remove(attachment.file_path)
+                db.session.delete(attachment)
+            
+            # Xóa nhiệm vụ
             db.session.delete(task)
             db.session.commit()
             return True

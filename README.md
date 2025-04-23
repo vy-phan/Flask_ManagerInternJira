@@ -34,6 +34,7 @@
 *   **Quản lý Môi trường:** Virtualenv, tệp `.env`
 
 
+
 ```markdown
 Flask_Backend_ThucTapSinh/
 ├── app/                  # Gói ứng dụng chính

@@ -17,17 +17,26 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # khởi tạo đối tượng SQLAlchemy
+    # Cấu hình thư mục lưu tệp
+    UPLOAD_FOLDER = 'uploads'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Giới hạn kích thước tệp: 16MB
+
+    # Đảm bảo thư mục uploads tồn tại
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    # Khởi tạo đối tượng SQLAlchemy
     db.init_app(app)
     migrate.init_app(app, db) 
     app.config['MEDIA_FOLDER'] = 'media'
 
-    # cho phép các website nào được quyền truy cập vào api của mình 
-    #  tạm thời cho * là tất cả trước mắt 
+    # Cho phép các website nào được quyền truy cập vào API của mình 
+    # Tạm thời cho * là tất cả trước mắt 
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     configure_logging(app)
     api = Api(app)
     
+
     # api cha để chứa các api con
     from app.routes import api_bp  
     app.register_blueprint(api_bp, url_prefix='/api')
@@ -50,6 +59,7 @@ def create_app(config_class=Config):
     return app
 
 
+
 # Configures the logging ( log ra mọi kết quả )
 def configure_logging(app):
     handler = TimedRotatingFileHandler('flask-template.log', when='midnight', interval=1, backupCount=10)
@@ -57,3 +67,4 @@ def configure_logging(app):
     formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
+

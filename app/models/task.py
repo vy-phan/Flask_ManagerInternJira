@@ -13,3 +13,10 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())  # Thời gian tạo
 
 
+    # Mối quan hệ với TaskAttachment (đã tự động tạo qua backref)
+    # attachments = db.relationship('TaskAttachment', backref='task', lazy=True)
+
+    def __repr__(self):
+        return f'<Task {self.code}>'
+
+

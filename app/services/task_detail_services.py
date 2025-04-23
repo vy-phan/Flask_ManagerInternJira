@@ -106,6 +106,7 @@ class TaskDetailService(ITaskDetailService):
         except Exception as e:
             raise Exception(f"Lỗi khi cập nhật task detail: {str(e)}")
 
+
     def update_status(self, detail_id: int, status: str) -> Dict[str, Any]:
         try:
             valid_statuses = ['Đã giao', 'Đang thực hiện', 'Hoàn thành']

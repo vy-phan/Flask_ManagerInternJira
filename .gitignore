@@ -15,6 +15,7 @@ venv/
 migrations/
 
 >>>>>>> origin/master
+>>>>>>> origin/master
 # C extensions
 *.so
 

@@ -1,7 +1,7 @@
 from .interfaces.task_service import ITaskService
 from ..repositories.interfaces.task_repository import ITaskRepository
 from ..repositories.task_repository import TaskRepository
-from ..models import Task
+from ..models import Task, TaskAttachment  # Nhập thêm TaskAttachment
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
@@ -19,10 +19,18 @@ class TaskService(ITaskService):
             'deadline': task.deadline.isoformat() if task.deadline else None,
             'status': task.status,
             'created_by': task.created_by,
-            'created_at': task.created_at.isoformat() if task.created_at else None
+            'created_at': task.created_at.isoformat() if task.created_at else None,
+            'attachments': [  # Thêm thông tin tệp đính kèm
+                {
+                    'id': attachment.id,
+                    'file_path': attachment.file_path,
+                    'uploaded_at': attachment.uploaded_at.isoformat() if attachment.uploaded_at else None
+                }
+                for attachment in task.attachments
+            ]
         }
         
-    def get_all(self) -> List[Dict[str, Any]]:  # Changed from get_all_tasks
+    def get_all(self) -> List[Dict[str, Any]]:
         """Get all tasks with formatted data"""
         tasks = self.task_repository.get_all()
         return [self._format_task_data(task) for task in tasks]
@@ -34,8 +42,8 @@ class TaskService(ITaskService):
             return None
         return self._format_task_data(task)
     
-    def create(self, data: Dict[str, Any]) -> Dict[str, Any]:  # Changed from create_task
-        """Create a new task from request data"""
+    def create(self, data: Dict[str, Any], file_paths: List[str] = None) -> Dict[str, Any]:
+        """Create a new task from request data and handle attachments"""
         try:
             # Validate required fields
             required_fields = ['code', 'title', 'deadline', 'created_by']
@@ -62,8 +70,16 @@ class TaskService(ITaskService):
                 created_by=data['created_by']
             )
             
-            # Save to database
+
+            # Save task to database
             created_task = self.task_repository.create(new_task)
+
+            # Lưu các tệp đính kèm nếu có
+            if file_paths:
+                for file_path in file_paths:
+                    self.task_repository.create_attachment(created_task.id, file_path)
+
+            # Format and return the created task
             return self._format_task_data(created_task)
             
         except Exception as e:
@@ -74,8 +90,8 @@ class TaskService(ITaskService):
         try:
             task = self.task_repository.get_by_id(task_id)
             if not task:
-                raise ValueError(f"Task with ID {task_id} not found")  # More specific error message
-            
+                raise ValueError(f"Task with ID {task_id} not found")
+
             # Convert English status to Vietnamese if needed
             status_map = {
                 'assigned': 'Đã giao',
@@ -114,6 +130,7 @@ class TaskService(ITaskService):
         except Exception as e:
             raise Exception(f"Error updating task: {str(e)}")
     
+
     def delete(self, task_id: int) -> bool:  # Changed from delete_task
         """Delete a task by ID"""
         try:
