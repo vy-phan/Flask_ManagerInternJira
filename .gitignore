@@ -7,12 +7,11 @@ __pycache__/
 # Other common ignores
 *.log
 venv/
-<<<<<<< HEAD
 .env
-=======
-.env 
 
->>>>>>> 8b23eae46e2afdda327046014522a4a095078e9a
+# Database migrations
+migrations/
+
 # C extensions
 *.so
 
