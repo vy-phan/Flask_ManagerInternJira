@@ -29,6 +29,15 @@ class TaskService(ITaskService):
                 for attachment in task.attachments
             ]
         }
+    def _format_attachment_data(self, attachment: TaskAttachment) -> Dict[str, Any]:
+        """Format attachment data for API response"""
+        return {
+            'id': attachment.id,
+            'task_id': attachment.task_id,
+            'file_path': attachment.file_path,
+            'uploaded_at': attachment.uploaded_at.isoformat() if attachment.uploaded_at else None
+        }
+    
         
     def get_all(self) -> List[Dict[str, Any]]:
         """Get all tasks with formatted data"""
@@ -41,6 +50,13 @@ class TaskService(ITaskService):
         if not task:
             return None
         return self._format_task_data(task)
+    
+    def get_attachment_by_id(self, attachment_id: int) -> Optional[Dict[str, Any]]:
+        """Get an attachment by ID with formatted data"""
+        attachment = self.task_repository.get_attachment_by_id(attachment_id)
+        if not attachment:
+            return None
+        return self._format_attachment_data(attachment)
     
     def create(self, data: Dict[str, Any], file_paths: List[str] = None) -> Dict[str, Any]:
         """Create a new task from request data and handle attachments"""
