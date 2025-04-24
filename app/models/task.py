@@ -4,7 +4,7 @@ class Task(db.Model):
     __tablename__ = 'tasks'
     
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(50), nullable=False)  # Mã nhiệm vụ
+    code = db.Column(db.String(50), nullable=False, unique=True)  # Mã nhiệm vụ
     title = db.Column(db.String(255), nullable=False)  # Tiêu đề
     description = db.Column(db.Text, nullable=True)  # Mô tả
     deadline = db.Column(db.DateTime, nullable=False)  # Thời hạn
