@@ -5,6 +5,7 @@ from ..models import TaskAttachment
 from datetime import datetime
 import os
 import uuid
+from .auth_routes import token_required
 
 task_bp = Blueprint('task', __name__, url_prefix='/task')
 task_service = TaskService()
@@ -21,7 +22,8 @@ def get_all_tasks():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/', methods=['POST'])
-def create_task():
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def create_task(current_user):
     try:
         if request.is_json:
             data = request.get_json()
@@ -104,7 +106,8 @@ def get_task_by_id(task_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/<int:task_id>', methods=['PUT'])
-def update_task(task_id):
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def update_task(current_user,task_id):
     try:
         data = request.get_json()
         if not data:
@@ -138,7 +141,8 @@ def update_task(task_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/<int:task_id>', methods=['DELETE'])
-def delete_task(task_id):
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def delete_task(current_user,task_id):
     try:
         result = task_service.delete(task_id)
         if not result:

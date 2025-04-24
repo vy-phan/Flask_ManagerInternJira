@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..services import UserService
 from datetime import datetime
+from .auth_routes import admin_required , token_required
 
 user_bp = Blueprint('user', __name__ , url_prefix='/user')
 user_service = UserService()
@@ -31,7 +32,8 @@ def get_user_by_id(user_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @user_bp.route('/', methods=['POST'])
-def create_user():
+@admin_required # các route có bảo vệ phải thêm tham số current_user
+def create_user(current_user):
     try:
         data = request.get_json()
         if not data:
@@ -83,7 +85,8 @@ def create_user():
         }), 500
 
 @user_bp.route('/<int:user_id>', methods=['PUT'])
-def update_user(user_id):  # Make sure this parameter matches the route
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def update_user(current_user, user_id):  
     try:
         # Lấy dữ liệu từ request body
         data = request.get_json()
@@ -121,7 +124,8 @@ def update_user(user_id):  # Make sure this parameter matches the route
         }), 500
 
 @user_bp.route('/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
+@admin_required
+def delete_user(current_user,user_id):
     try:
         # Gọi service để xóa user
         result = user_service.delete(user_id)
@@ -135,3 +139,5 @@ def delete_user(user_id):
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# Remove any stray characters after this line

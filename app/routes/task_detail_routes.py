@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ..services import TaskDetailService
+from .auth_routes import token_required
 
 task_detail_bp = Blueprint('task_detail', __name__, url_prefix='/task_detail')
 task_detail_service = TaskDetailService()
@@ -23,7 +24,8 @@ def get_task_detail_by_task_id(task_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_detail_bp.route('/', methods=['POST'])
-def create_task_detail():
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def create_task_detail(current_user):
     try:
         data = request.get_json()
         if not data:
@@ -46,7 +48,8 @@ def create_task_detail():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_detail_bp.route('/<int:task_detail_id>', methods=['PUT'])
-def update_task_detail(task_detail_id):
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def update_task_detail(current_user,task_detail_id):
     try:
         data = request.get_json()
         if not data:
@@ -63,7 +66,8 @@ def update_task_detail(task_detail_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_detail_bp.route('/<int:task_detail_id>', methods=['DELETE'])
-def delete_task_detail(task_detail_id):
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def delete_task_detail(current_user,task_detail_id):
     try:
         result = task_detail_service.delete(task_detail_id)
         if not result:
@@ -75,9 +79,9 @@ def delete_task_detail(task_detail_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-
 @task_detail_bp.route('/<int:task_detail_id>/status/<string:status>', methods=['PATCH'])
-def update_task_detail_status(task_detail_id, status):
+@token_required # các route có bảo vệ phải thêm tham số current_user
+def update_task_detail_status(current_user,task_detail_id, status):
     try:
         updated = task_detail_service.update_status(task_detail_id, status)
         if not updated:

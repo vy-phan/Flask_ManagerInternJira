@@ -2,9 +2,11 @@ from .interfaces.user_service import IUserService
 from ..repositories.interfaces.user_repository import IUserRepository
 from ..repositories.user_repository import UserRepository
 from ..models import User
-from typing import List, Optional, Dict, Any
-from datetime import datetime
+from typing import List, Optional, Dict, Any, Tuple
+from datetime import datetime, timedelta
 import bcrypt
+import jwt
+import os
 
 class UserService(IUserService):
     def __init__(self, user_repository: IUserRepository = None):
@@ -108,17 +110,67 @@ class UserService(IUserService):
         """Delete a user by ID"""
         return self.user_repository.delete(id)
 
-
-
-    def verify_credentials(self, email: str, password: str) -> bool:
-        """Verify user credentials"""
+    def verify_credentials(self, email: str, password: str) -> Tuple[bool, Optional[User]]:
+        """Verify user credentials and return user if valid"""
         user = self.user_repository.get_by_email(email)
         if not user:
-            return False
+            return False, None
             
         password_bytes = password.encode('utf-8')
         hashed_password = user.password_hash.encode('utf-8')
-        return bcrypt.checkpw(password_bytes, hashed_password)
+        if bcrypt.checkpw(password_bytes, hashed_password):
+            return True, user
+        return False, None
+        
+    def generate_access_token(self, user_id: int) -> str:
+        user = self.user_repository.get_by_id(user_id)
+        payload = {
+            'exp': datetime.utcnow() + timedelta(minutes=15),
+            'iat': datetime.utcnow(),
+            'sub': user_id,
+            'role': user.role.value if user.role else None  # Thêm role vào token
+        }
+        return jwt.encode(payload, os.getenv('SECRET_KEY'), algorithm='HS256')
+    
+    def generate_refresh_token(self, user_id: int) -> str:
+        """Generate a long-lived refresh token"""
+        payload = {
+            'exp': datetime.utcnow() + timedelta(days=7),  # Token expires in 7 days
+            'iat': datetime.utcnow(),
+            'sub': user_id
+        }
+        return jwt.encode(
+            payload,
+            os.getenv('SECRET_KEY'),
+            algorithm='HS256'
+        )
+    
+    def verify_token(self, token: str) -> Tuple[bool, Optional[Dict]]:
+        """Verify a JWT token and return the payload if valid"""
+        try:
+            payload = jwt.decode(
+                token,
+                os.getenv('SECRET_KEY'),
+                algorithms=['HS256']
+            )
+            return True, payload
+
+        # Token quá thời hạn 
+        except jwt.ExpiredSignatureError:
+            return False, {'error': 'Token has expired'}
+
+        # Token không hợp lệ 
+        except jwt.InvalidTokenError:
+            return False, {'error': 'Invalid token'}
+            
+    def get_user_from_token(self, token: str) -> Optional[Dict[str, Any]]:
+        """Get user data from a valid token"""
+        is_valid, payload = self.verify_token(token)
+        if not is_valid or 'sub' not in payload:
+            return None
+            
+        user_id = payload['sub']
+        return self.get_by_id(user_id)
 
 
     
