@@ -1,7 +1,7 @@
 from typing import Dict, Any, List 
 from flask import Blueprint, jsonify, request, current_app, send_file
 from ..services import TaskService
-from ..models import TaskAttachment  # Nhập TaskAttachment để tải xuống tệp (tùy chọn)
+from ..models import TaskAttachment
 from datetime import datetime
 import os
 import uuid
@@ -12,14 +12,80 @@ task_service = TaskService()
 @task_bp.route('/', methods=['GET'])
 def get_all_tasks():
     try:
-        tasks = task_service.get_all()  
-
+        tasks = task_service.get_all()
         return jsonify({
             'success': True,
             'data': tasks
         }), 200
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@task_bp.route('/', methods=['POST'])
+def create_task():
+    try:
+        if request.is_json:
+            data = request.get_json()
+            if not data:
+                return jsonify({'success': False, 'error': 'No data provided'}), 400
+            file_paths = None
+        elif request.form:
+            data = request.form.to_dict()
+            if not data:
+                return jsonify({'success': False, 'error': 'No form data provided'}), 400
+
+            file_paths = []
+            if 'attachments' in request.files:
+                files = request.files.getlist('attachments')
+                for file in files:
+                    if file and file.filename:
+                        filename = f"{uuid.uuid4()}_{file.filename}"
+                        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                        file.save(file_path)
+                        if not os.path.exists(file_path):
+                            return jsonify({
+                                'success': False,
+                                'error': f'Failed to save file: {filename}'
+                            }), 500
+                        # Chuyển thành đường dẫn tuyệt đối
+                        absolute_file_path = os.path.abspath(file_path)
+                        file_paths.append(absolute_file_path)
+        else:
+            return jsonify({'success': False, 'error': 'Unsupported content type'}), 400
+
+        required_fields = ['code', 'title', 'deadline', 'created_by']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return jsonify({
+                    'success': False,
+                    'error': f'Missing required field: {field}'
+                }), 400
+
+        try:
+            datetime.fromisoformat(data['deadline'])
+        except ValueError:
+            return jsonify({
+                'success': False,
+                'error': 'Invalid deadline format. Use ISO format (e.g., 2025-04-21T15:30:00)'
+            }), 400
+
+        new_task = task_service.create(data, file_paths)
+        if not new_task:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to create task'
+            }), 500
+
+        return jsonify({
+            'success': True,
+            'message': 'Task created successfully',
+            'data': new_task
+        }), 201
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @task_bp.route('/<int:task_id>', methods=['GET'])
 def get_task_by_id(task_id):
@@ -37,89 +103,39 @@ def get_task_by_id(task_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-def create(self, data: Dict[str, Any], file_paths: List[str] = None) -> Dict[str, Any]:
-        """Create a new task from request data and handle attachments"""
-        try:
-            # Validate required fields
-            required_fields = ['code', 'title', 'deadline', 'created_by']
-            for field in required_fields:
-                if field not in data or not data[field]:
-                    raise ValueError(f"Missing required field: {field}")
+@task_bp.route('/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
 
-            # Validate deadline
-            deadline = datetime.fromisoformat(data['deadline'])
-            
-            # Validate status with Vietnamese values
-            valid_statuses = ['Đã giao', 'Đang thực hiện', 'Đã hoàn thành']
-            status = data.get('status', 'Đã giao')
-            if status not in valid_statuses:
-                raise ValueError(f"Invalid status. Must be one of: {valid_statuses}")
+        if 'deadline' in data:
+            try:
+                datetime.fromisoformat(data['deadline'])
+            except ValueError:
+                return jsonify({
+                    'success': False,
+                    'error': 'Invalid deadline format. Use ISO format (e.g., 2025-04-21T15:30:00)'
+                }), 400
 
-            # Create new task
-            new_task = Task(
-                code=data['code'],
-                title=data['title'],
-                description=data.get('description'),
-                deadline=deadline,
-                status=status,
-                created_by=data['created_by']
-            )
-            
-            # Save task to database
-            created_task = self.task_repository.create(new_task)
+        updated_task = task_service.update(task_id, data)
+        if not updated_task:
+            return jsonify({
+                'success': False,
+                'error': f'Task with ID {task_id} not found'
+            }), 404
 
-            # Lưu các tệp đính kèm nếu có
-            if file_paths:
-                for file_path in file_paths:
-                    self.task_repository.create_attachment(created_task.id, file_path)
+        return jsonify({
+            'success': True,
+            'message': 'Task updated successfully',
+            'data': updated_task
+        }), 200
 
-            # Format and return the created task
-            return self._format_task_data(created_task)
-            
-        except Exception as e:
-            raise Exception(f"Error creating task: {str(e)}")
-    
-def update(self, task_id: int, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Update an existing task from request data"""
-        try:
-            task = self.task_repository.get_by_id(task_id)
-            if not task:
-                raise ValueError(f"Task with ID {task_id} not found")
-            
-            # Convert English status to Vietnamese if needed
-            status_map = {
-                'assigned': 'Đã giao',
-                'in_progress': 'Đang thực hiện',
-                'completed': 'Đã hoàn thành'
-            }
-            if 'status' in data:
-                data['status'] = status_map.get(data['status'], data['status'])
-                
-            # Validate status with Vietnamese values
-            valid_statuses = ['Đã giao', 'Đang thực hiện', 'Đã hoàn thành']
-            if 'status' in data and data['status'] not in valid_statuses:
-                raise ValueError(f"Invalid status. Must be one of: {valid_statuses}")
-
-            # Update task fields from data
-            if 'code' in data:
-                task.code = data['code']
-            if 'title' in data:
-                task.title = data['title']
-            if 'description' in data:
-                task.description = data['description']
-            if 'deadline' in data:
-                task.deadline = datetime.fromisoformat(data['deadline'])
-            if 'status' in data:
-                task.status = data['status']
-            if 'created_by' in data:
-                task.created_by = data['created_by']
-            
-            # Save changes
-            updated_task = self.task_repository.update(task)
-            return self._format_task_data(updated_task) if updated_task else None
-            
-        except Exception as e:
-            raise Exception(f"Error updating task: {str(e)}")
+    except ValueError as e:
+        return jsonify({'success': False, 'error': str(e)}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
@@ -139,12 +155,24 @@ def delete_task(task_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-# Endpoint tùy chọn để tải xuống tệp đính kèm
 @task_bp.route('/attachment/<int:attachment_id>', methods=['GET'])
 def download_attachment(attachment_id):
     try:
-        attachment = TaskAttachment.query.get_or_404(attachment_id)
-        return send_file(attachment.file_path, as_attachment=True)
+        attachment_data = task_service.get_attachment_by_id(attachment_id)
+        if not attachment_data:
+            return jsonify({
+                'success': False,
+                'error': f'Attachment with ID {attachment_id} not found'
+            }), 404
+
+        file_path = attachment_data['file_path']
+        if not os.path.exists(file_path):
+            return jsonify({
+                'success': False,
+                'error': f'File not found at path: {file_path}'
+            }), 404
+
+        return send_file(file_path, as_attachment=True)
     except Exception as e:
         return jsonify({
             'success': False,

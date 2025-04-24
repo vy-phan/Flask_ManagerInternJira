@@ -22,6 +22,9 @@ class TaskRepository(ITaskRepository):
             db.session.rollback()
             raise e
         
+    def get_attachment_by_id(self, attachment_id: int) -> TaskAttachment | None:
+        return TaskAttachment.query.get(attachment_id)
+        
     def create_attachment(self, task_id: int, file_path: str) -> TaskAttachment:
         """Create a new attachment for a task"""
         try:
