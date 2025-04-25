@@ -1,14 +1,13 @@
 from typing import Dict, Any, List 
 from flask import Blueprint, jsonify, request, current_app, send_file
-from ..services import TaskService
+from ..services import TaskService, UploadService
 from ..models import TaskAttachment
 from datetime import datetime
-import os
-import uuid
 from .auth_routes import token_required
 
 task_bp = Blueprint('task', __name__, url_prefix='/task')
 task_service = TaskService()
+upload_service = UploadService()
 
 @task_bp.route('/', methods=['GET'])
 def get_all_tasks():
@@ -22,7 +21,7 @@ def get_all_tasks():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/', methods=['POST'])
-@token_required # các route có bảo vệ phải thêm tham số current_user
+@token_required
 def create_task(current_user):
     try:
         if request.is_json:
@@ -35,22 +34,8 @@ def create_task(current_user):
             if not data:
                 return jsonify({'success': False, 'error': 'No form data provided'}), 400
 
-            file_paths = []
-            if 'attachments' in request.files:
-                files = request.files.getlist('attachments')
-                for file in files:
-                    if file and file.filename:
-                        filename = f"{uuid.uuid4()}_{file.filename}"
-                        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                        file.save(file_path)
-                        if not os.path.exists(file_path):
-                            return jsonify({
-                                'success': False,
-                                'error': f'Failed to save file: {filename}'
-                            }), 500
-                        # Chuyển thành đường dẫn tuyệt đối
-                        absolute_file_path = os.path.abspath(file_path)
-                        file_paths.append(absolute_file_path)
+            # Sử dụng UploadService để xử lý upload file
+            file_paths = upload_service.upload_files(request, 'attachments')
         else:
             return jsonify({'success': False, 'error': 'Unsupported content type'}), 400
 
@@ -106,8 +91,8 @@ def get_task_by_id(task_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/<int:task_id>', methods=['PUT'])
-@token_required # các route có bảo vệ phải thêm tham số current_user
-def update_task(current_user,task_id):
+@token_required
+def update_task(current_user, task_id):
     try:
         data = request.get_json()
         if not data:
@@ -141,8 +126,8 @@ def update_task(current_user,task_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_bp.route('/<int:task_id>', methods=['DELETE'])
-@token_required # các route có bảo vệ phải thêm tham số current_user
-def delete_task(current_user,task_id):
+@token_required
+def delete_task(current_user, task_id):
     try:
         result = task_service.delete(task_id)
         if not result:
