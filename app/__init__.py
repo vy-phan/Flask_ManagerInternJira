@@ -39,7 +39,8 @@ def create_app(config_class=Config):
 
     # api cha để chứa các api con
     from app.routes import api_bp  
-    app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(api_bp, url_prefix='/api/v1')
+
     
     # Error handlers ( xử lí lỗi ) xử lý các lỗi 404, 500
     @app.errorhandler(404)
