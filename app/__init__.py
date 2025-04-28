@@ -32,7 +32,15 @@ def create_app(config_class=Config):
 
     # Cho phép các website nào được quyền truy cập vào API của mình 
     # Tạm thời cho * là tất cả trước mắt 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Configure CORS
+    CORS(app, 
+         resources={
+             r"/api/*": {
+                 "origins": ["http://localhost:5173"],
+                 "supports_credentials": True,
+                 "methods": ["GET", "POST", "PUT", "DELETE"]
+             }
+         })
     configure_logging(app)
     api = Api(app)
     
