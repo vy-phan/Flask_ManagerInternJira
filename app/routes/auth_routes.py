@@ -225,23 +225,42 @@ def validate_token():
 
 @auth_bp.route('/logout/', methods=['POST'])
 def logout():
-    # Create response
-    response = make_response(jsonify({
-        'success': True,
-        'message': 'Logout successful'
-    }))
-    
-    # Delete cookies by setting them to empty and expiring them
-    response.set_cookie('access_token', '', expires=0)
-    response.set_cookie('refresh_token', '', expires=0)
-    
-    return response, 200
+    try:
+        response = make_response(jsonify({
+            'success': True,
+            'message': 'Logout successful'
+        }))
+        
+        # Delete cookies by setting them to empty and expiring them
+        response.set_cookie('access_token', '', expires=0)
+        response.set_cookie('refresh_token', '', expires=0)
+        
+        return response, 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'Logout failed',
+            'error': str(e)
+        }), 500
 
 # lấy thông tin user hiện tại
 @auth_bp.route('/me/', methods=['GET'])
 @token_required
 def get_current_user(current_user):
-    return jsonify({
-        'success': True,
-        'data': current_user
-    }), 200
+    try:
+        if not current_user:
+            return jsonify({
+                'success': False,
+                'message': 'User not found'
+            }), 404
+            
+        return jsonify({
+            'success': True,
+            'data': current_user
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False, 
+            'message': 'Failed to get user info',
+            'error': str(e)
+        }), 500
