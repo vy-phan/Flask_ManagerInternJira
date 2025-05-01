@@ -1,0 +1,545 @@
+2025-04-24 20:23:00,399 ERROR: Exception on /api/auth/login/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\pymysql\connections.py", line 644, in connect
+    sock = socket.create_connection(
+        (self.host, self.port), self.connect_timeout, **kwargs
+    )
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 864, in create_connection
+    raise exceptions[0]
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 849, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3298, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 622, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\pymysql\connections.py", line 358, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\pymysql\connections.py", line 711, in connect
+    raise exc
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 83, in login
+    is_valid, user = user_service.verify_credentials(email, password)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 115, in verify_credentials
+    user = self.user_repository.get_by_email(email)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\repositories\user_repository.py", line 22, in get_by_email
+    return User.query.filter_by(email=email).first()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2754, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2853, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2365, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2241, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2110, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3274, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 148, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2439, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3298, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 622, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\pymysql\connections.py", line 358, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\pymysql\connections.py", line 711, in connect
+    raise exc
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-04-24 20:32:22,525 ERROR: Exception on /api/auth/login/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 83, in login
+    is_valid, user = user_service.verify_credentials(email, password)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 121, in verify_credentials
+    if bcrypt.checkpw(password_bytes, hashed_password):
+       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Invalid salt
+2025-04-24 20:33:00,541 ERROR: Exception on /api/auth/login/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 83, in login
+    is_valid, user = user_service.verify_credentials(email, password)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 121, in verify_credentials
+    if bcrypt.checkpw(password_bytes, hashed_password):
+       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Invalid salt
+2025-04-24 20:34:10,292 ERROR: Exception on /api/auth/login/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 83, in login
+    is_valid, user = user_service.verify_credentials(email, password)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 121, in verify_credentials
+    if bcrypt.checkpw(password_bytes, hashed_password):
+       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Invalid salt
+2025-04-24 20:39:49,664 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:40:44,759 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:40:57,974 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:41:05,568 ERROR: Exception on /api/auth/login/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 83, in login
+    is_valid, user = user_service.verify_credentials(email, password)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 121, in verify_credentials
+    if bcrypt.checkpw(password_bytes, hashed_password):
+       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Invalid salt
+2025-04-24 20:41:09,449 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:41:25,033 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:42:40,170 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:43:17,525 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:45:16,873 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:45:19,350 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:47:10,855 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:47:15,890 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:47:17,685 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:47:18,789 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:47:27,889 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:47:29,598 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'
+2025-04-24 20:50:30,743 ERROR: Exception on /api/user/ [POST] [in D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\hoc_python\Flask_Backend_ThucTapSinh\venv\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: create_user() missing 1 required positional argument: 'current_user'

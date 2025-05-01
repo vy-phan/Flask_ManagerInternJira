@@ -32,7 +32,7 @@ def get_user_by_id(user_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @user_bp.route('/', methods=['POST'])
-@admin_required # các route có bảo vệ phải thêm tham số current_user
+# @admin_required # các route có bảo vệ phải thêm tham số current_user
 def create_user(current_user):
     try:
         data = request.get_json()
