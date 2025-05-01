@@ -32,14 +32,23 @@ def create_app(config_class=Config):
 
     # Cho phép các website nào được quyền truy cập vào API của mình 
     # Tạm thời cho * là tất cả trước mắt 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Configure CORS
+    CORS(app, resources={
+        r"/api/v1/*": {
+            "origins": ["http://localhost:5173"],
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+        }
+    })
     configure_logging(app)
     api = Api(app)
     
 
     # api cha để chứa các api con
     from app.routes import api_bp  
-    app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(api_bp, url_prefix='/api/v1')
+
     
     # Error handlers ( xử lí lỗi ) xử lý các lỗi 404, 500
     @app.errorhandler(404)

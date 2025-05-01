@@ -7,10 +7,13 @@ from datetime import datetime, timedelta
 import bcrypt
 import jwt
 import os
+from .upload_service import UploadService
+from flask import Request
 
 class UserService(IUserService):
     def __init__(self, user_repository: IUserRepository = None):
         self.user_repository = user_repository or UserRepository()
+        self.upload_service = UploadService()
     
     def _format_user_data(self, user: User) -> Dict[str, Any]:
         """Format user data for API response"""
@@ -70,17 +73,31 @@ class UserService(IUserService):
         created_user = self.user_repository.create(new_user)
         return self._format_user_data(created_user)
     
-    def update(self, user_id: int, data: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, user_id: int, data: Dict[str, Any], request: Request = None) -> Dict[str, Any]:
         """Update an existing user from request data"""
         user = self.user_repository.get_by_id(user_id)
         if not user:
             return None
         
+        # Handle file uploads if request is provided
+        if request:
+            # Handle avatar upload
+            avatar_paths = self.upload_service.upload_files(request, 'avatar')
+            if avatar_paths and len(avatar_paths) > 0:
+                # Use the first uploaded avatar file
+                user.avatar = avatar_paths[0]
+            
+            # Handle CV upload
+            cv_paths = self.upload_service.upload_files(request, 'cv_link')
+            if cv_paths and len(cv_paths) > 0:
+                # Use the first uploaded CV file
+                user.cv_link = cv_paths[0]
+        
         # Update user fields from data
-        if 'username' in data:  # Changed from user_data to data
-            user.username = data['username']  # Changed from user_data to data
-        if 'password' in data:  # Changed from user_data to data
-            password = data['password'].encode('utf-8')  # Changed from user_data to data
+        if 'username' in data:
+            user.username = data['username']
+        if 'password' in data:
+            password = data['password'].encode('utf-8')
             salt = bcrypt.gensalt()
             user.password_hash = bcrypt.hashpw(password, salt).decode('utf-8')
         if 'email' in data:
@@ -91,11 +108,11 @@ class UserService(IUserService):
             user.phone = data['phone']
         if 'gender' in data:
             user.gender = data['gender']
-        if 'avatar' in data:
+        if 'avatar' in data and not request:  # Only update from data if not from file upload
             user.avatar = data['avatar']
         if 'start_date' in data:
             user.start_date = datetime.fromisoformat(data['start_date'])
-        if 'cv_link' in data:
+        if 'cv_link' in data and not request:  # Only update from data if not from file upload
             user.cv_link = data['cv_link']
         if 'role' in data:
             user.role = data['role']

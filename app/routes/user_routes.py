@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from ..services import UserService
+from ..services import UserService, UploadService
 from datetime import datetime
-from .auth_routes import admin_required , token_required
+from .auth_routes import admin_required, token_required
 
 user_bp = Blueprint('user', __name__ , url_prefix='/user')
 user_service = UserService()
@@ -88,10 +88,19 @@ def create_user(current_user):
 @token_required # các route có bảo vệ phải thêm tham số current_user
 def update_user(current_user, user_id):  
     try:
-        # Lấy dữ liệu từ request body
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        # Xử lý dữ liệu dựa trên loại request
+        if request.is_json:
+            # Xử lý JSON data
+            data = request.get_json()
+            if not data:
+                return jsonify({'success': False, 'error': 'No data provided'}), 400
+            req = None  # Không có file upload trong JSON request
+        elif request.form or request.files:
+            # Xử lý form data và file uploads
+            data = request.form.to_dict() if request.form else {}
+            req = request  # Truyền request object để xử lý file uploads
+        else:
+            return jsonify({'success': False, 'error': 'Unsupported content type'}), 400
 
         # Kiểm tra gender hợp lệ nếu được cung cấp
         if 'gender' in data:
@@ -106,8 +115,8 @@ def update_user(current_user, user_id):
             except ValueError:
                 return jsonify({'success': False, 'error': 'Invalid start_date format. Use ISO format (e.g., 2025-04-21)'}), 400
 
-        # Gọi service để cập nhật user - ensure user_id is passed correctly
-        updated_user = user_service.update(user_id, data)
+        # Gọi service để cập nhật user - truyền thêm request object nếu có file uploads
+        updated_user = user_service.update(user_id, data, req)
         if not updated_user:
             return jsonify({'success': False, 'error': 'User not found'}), 404
 
@@ -139,5 +148,3 @@ def delete_user(current_user,user_id):
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-
-# Remove any stray characters after this line
