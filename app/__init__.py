@@ -13,7 +13,6 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app(config_class=Config):
-    # Initialize Flask app
     app = Flask(__name__)
     app.config.from_object(config_class)
     
@@ -65,6 +64,24 @@ def create_app(config_class=Config):
             'message': 'Inter server error'
         }), 500
     
+    @app.route('/api/v1/uploads/<filename>')
+    def uploaded_file(filename):
+        from flask import send_from_directory, abort
+        try:
+            # Get absolute path to upload folder
+            upload_folder = os.path.abspath(app.config['UPLOAD_FOLDER'])
+            
+            # Verify file exists
+            file_path = os.path.join(upload_folder, filename)
+            if not os.path.exists(file_path):
+                app.logger.error(f"File not found: {file_path}")
+                abort(404)
+                
+            return send_from_directory(upload_folder, filename, mimetype='image/jpeg')
+        except Exception as e:
+            app.logger.error(f"Error serving file {filename}: {str(e)}")
+            abort(500)
+
     return app
 
 
