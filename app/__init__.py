@@ -76,8 +76,25 @@ def create_app(config_class=Config):
             if not os.path.exists(file_path):
                 app.logger.error(f"File not found: {file_path}")
                 abort(404)
-                
-            return send_from_directory(upload_folder, filename, mimetype='image/jpeg')
+            
+            # Determine file type and set appropriate mimetype
+            file_ext = os.path.splitext(filename)[1].lower()
+            mimetypes = {
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif',
+                '.pdf': 'application/pdf',
+                '.doc': 'application/msword',
+                '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                '.xls': 'application/vnd.ms-excel',
+                '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                '.ppt': 'application/vnd.ms-powerpoint',
+                '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+            }
+            
+            mimetype = mimetypes.get(file_ext, 'application/octet-stream')
+            return send_from_directory(upload_folder, filename, mimetype=mimetype)
         except Exception as e:
             app.logger.error(f"Error serving file {filename}: {str(e)}")
             abort(500)
