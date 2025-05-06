@@ -4,13 +4,19 @@ from ..repositories.task_repository import TaskRepository
 from ..models import Task, TaskAttachment  # Nhập thêm TaskAttachment
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+from ..services.user_service import UserService  # Import UserService
 
 class TaskService(ITaskService):
-    def __init__(self, task_repository: ITaskRepository = None):
+    def __init__(self, task_repository: ITaskRepository = None, user_service: UserService = None):
         self.task_repository = task_repository or TaskRepository()
+        self.user_service = user_service or UserService()  # Khởi tạo UserService
     
     def _format_task_data(self, task: Task) -> Dict[str, Any]:
         """Format task data for API response"""
+        # Lấy thông tin người dùng từ UserService
+        user = self.user_service.get_by_id(task.created_by)
+        username = user['username'] if user else None
+
         return {
             'id': task.id,
             'code': task.code,
@@ -19,8 +25,9 @@ class TaskService(ITaskService):
             'deadline': task.deadline.isoformat() if task.deadline else None,
             'status': task.status,
             'created_by': task.created_by,
+            'created_by_username': username,  # Thêm username vào dữ liệu trả về
             'created_at': task.created_at.isoformat() if task.created_at else None,
-            'attachments': [  # Thêm thông tin tệp đính kèm
+            'attachments': [
                 {
                     'id': attachment.id,
                     'file_path': attachment.file_path,
@@ -29,18 +36,9 @@ class TaskService(ITaskService):
                 for attachment in task.attachments
             ]
         }
-    def _format_attachment_data(self, attachment: TaskAttachment) -> Dict[str, Any]:
-        """Format attachment data for API response"""
-        return {
-            'id': attachment.id,
-            'task_id': attachment.task_id,
-            'file_path': attachment.file_path,
-            'uploaded_at': attachment.uploaded_at.isoformat() if attachment.uploaded_at else None
-        }
-    
-        
+
     def get_all(self) -> List[Dict[str, Any]]:
-        """Get all tasks with formatted data"""
+        """Get all tasks with user information"""
         tasks = self.task_repository.get_all()
         return [self._format_task_data(task) for task in tasks]
     
@@ -152,4 +150,4 @@ class TaskService(ITaskService):
         try:
             return self.task_repository.delete(task_id)
         except Exception as e:
-            raise Exception(f"Error deleting task: {str(e)}")
+            raise Exception(f"Lỗi xóa task: {str(e)}")
