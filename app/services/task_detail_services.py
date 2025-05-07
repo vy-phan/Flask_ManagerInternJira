@@ -100,6 +100,26 @@ class TaskDetailService(ITaskDetailService):
 
             detail.updated_at = datetime.utcnow()
 
+            # Xử lý cập nhật assignees nếu có
+            if 'assignees' in data:
+                assignees = data['assignees']  # List of usernames
+                # Xóa hết assignees cũ
+                old_assignees = self.task_detail_assignee_repository.get_by_task_detail_id(detail_id)
+                for assignee in old_assignees:
+                    self.task_detail_assignee_repository.delete(assignee.id)
+                # Thêm lại assignees mới
+                user_repo = UserRepository()
+                for username in assignees:
+                    user = user_repo.get_by_username(username)
+                    if not user:
+                        raise LookupError(f"User với username '{username}' không tồn tại")
+                    new_assignee = Task_Detail_Assignees(
+                        task_detail_id=detail_id,
+                        user_id=user.id,
+                        assigned_at=datetime.utcnow()
+                    )
+                    self.task_detail_assignee_repository.create(new_assignee)
+
             updated = self.task_detail_repository.update(detail)
             return self._format_task_detail_data(updated)
 
