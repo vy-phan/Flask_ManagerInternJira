@@ -85,9 +85,9 @@ class TaskRepository(ITaskRepository):
             db.session.rollback()
             raise e
     def count_incomplete_task_details(self, task_id: int) -> int:
-        """Count all task details with status not equal to 'Đã hoàn thành'"""
+        """Count all task details with status not equal to 'Hoàn thành'"""
         return db.session.query(Task_Detail).filter(
             Task_Detail.task_id == task_id,
-            Task_Detail.status != 'Đã hoàn thành'
+            Task_Detail.status != 'Hoàn thành'
         ).count()
 
