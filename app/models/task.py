@@ -11,11 +11,9 @@ class Task(db.Model):
     status = db.Column(db.Enum('Đã giao', 'Đang thực hiện', 'Đã hoàn thành'), default='Đã giao')  # Trạng thái
     created_by = db.Column(db.Integer, nullable=False)  # ID của người tạo
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())  # Thời gian tạo
-
-
-    # Mối quan hệ với TaskAttachment (đã tự động tạo qua backref)
-    # attachments = db.relationship('TaskAttachment', backref='task', lazy=True)
-
+    
+    # Mối quan hệ với User
+   
     def __repr__(self):
         return f'<Task {self.code}>'
 

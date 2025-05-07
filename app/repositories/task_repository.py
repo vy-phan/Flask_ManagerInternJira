@@ -2,6 +2,8 @@ from .interfaces.task_repository import ITaskRepository
 from ..models import db, Task, TaskAttachment
 from typing import List, Optional
 import os
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 
 class TaskRepository(ITaskRepository):
     def get_all(self) -> List[Task]:  # Changed from get_all_tasks
@@ -67,6 +69,9 @@ class TaskRepository(ITaskRepository):
             db.session.delete(task)
             db.session.commit()
             return True
+        except IntegrityError as e:  # Bắt lỗi khóa ngoại
+            db.session.rollback()
+            raise ValueError("Không thể xóa task vì có chi tiết công việc liên quan.") from e
         except Exception as e:
             db.session.rollback()
             raise e
