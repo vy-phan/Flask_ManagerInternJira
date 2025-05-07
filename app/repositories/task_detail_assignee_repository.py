@@ -28,3 +28,24 @@ class TaskDetailAssigneeRepository:
         except Exception as e:
             db.session.rollback()
             raise e
+
+    def update(self, assignee_id: int, **kwargs) -> Optional[Task_Detail_Assignees]:
+        """
+        Update a task detail assignee by ID.
+        kwargs: fields to update (e.g., name=value)
+        Returns the updated assignee or None if not found.
+        """
+        assignee = Task_Detail_Assignees.query.get(assignee_id)
+        if not assignee:
+            return None
+        try:
+            for key, value in kwargs.items():
+                if hasattr(assignee, key):
+                    setattr(assignee, key, value)
+            db.session.commit()
+            return assignee
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
+# ...existing code...

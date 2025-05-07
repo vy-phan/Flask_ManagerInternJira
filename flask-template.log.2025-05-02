@@ -1,0 +1,66 @@
+2025-05-02 08:50:52,484 ERROR: Exception on /api/v1/auth/login/ [POST] [in C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Quan_li_thuc_tap_sinh\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 86, in login
+    access_token = user_service.generate_access_token(user.id)
+  File "D:\hoc_python\Quan_li_thuc_tap_sinh\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 150, in generate_access_token
+    return jwt.encode(payload, os.getenv('SECRET_KEY'), algorithm='HS256')
+           ^^^^^^^^^^
+AttributeError: module 'jwt' has no attribute 'encode'
+2025-05-02 08:51:41,538 ERROR: Exception on /api/v1/auth/login/ [POST] [in C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Quan_li_thuc_tap_sinh\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 86, in login
+    access_token = user_service.generate_access_token(user.id)
+  File "D:\hoc_python\Quan_li_thuc_tap_sinh\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 150, in generate_access_token
+    return jwt.encode(payload, os.getenv('SECRET_KEY'), algorithm='HS256')
+           ^^^^^^^^^^
+AttributeError: module 'jwt' has no attribute 'encode'
+2025-05-02 08:52:31,285 ERROR: Exception on /api/v1/auth/login/ [POST] [in C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_restful\__init__.py", line 298, in error_router
+    return original_handler(e)
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\PC\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\hoc_python\Quan_li_thuc_tap_sinh\Flask_Backend_ThucTapSinh\app\routes\auth_routes.py", line 86, in login
+    access_token = user_service.generate_access_token(user.id)
+  File "D:\hoc_python\Quan_li_thuc_tap_sinh\Flask_Backend_ThucTapSinh\app\services\user_service.py", line 150, in generate_access_token
+    return jwt.encode(payload, os.getenv('SECRET_KEY'), algorithm='HS256')
+           ^^^^^^^^^^
+AttributeError: module 'jwt' has no attribute 'encode'

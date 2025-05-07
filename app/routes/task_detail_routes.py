@@ -2,8 +2,33 @@ from flask import Blueprint, request, jsonify
 from ..services import TaskDetailService
 from .auth_routes import token_required
 
+from ..repositories.task_detail_assignee_repository import TaskDetailAssigneeRepository
+from ..repositories.user_repository import UserRepository
+
+
 task_detail_bp = Blueprint('task_detail', __name__, url_prefix='/task_detail')
 task_detail_service = TaskDetailService()
+
+assignee_repo = TaskDetailAssigneeRepository()
+user_repo = UserRepository()
+
+@task_detail_bp.route('/<int:task_detail_id>/assignees', methods=['GET'])
+def get_task_detail_assignees(task_detail_id):
+    try:
+        assignees = assignee_repo.get_by_task_detail_id(task_detail_id)
+        # Lấy thông tin user từ user_id
+        users = []
+        for assignee in assignees:
+            user = user_repo.get_by_id(assignee.user_id)
+            if user:
+                users.append({
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email
+                })
+        return jsonify({'success': True, 'data': users}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @task_detail_bp.route('/', methods=['GET'])
 def get_all_task_details():
