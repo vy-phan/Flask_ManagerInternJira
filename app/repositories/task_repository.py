@@ -1,7 +1,9 @@
 from .interfaces.task_repository import ITaskRepository
-from ..models import db, Task, TaskAttachment
+from ..models import db, Task, TaskAttachment, Task_Detail
 from typing import List, Optional
 import os
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 
 class TaskRepository(ITaskRepository):
     def get_all(self) -> List[Task]:  # Changed from get_all_tasks
@@ -56,17 +58,36 @@ class TaskRepository(ITaskRepository):
             return False
         
         try:
+            # Xóa tất cả các bản ghi trong bảng task_details liên quan đến task
+            db.session.query(Task_Detail).filter_by(task_id=task_id).delete()
+
             # Xóa các tệp đính kèm (cả bản ghi trong DB và tệp vật lý nếu cần)
             for attachment in task.attachments:
-                # Xóa tệp vật lý (tùy chọn)
-                if os.path.exists(attachment.file_path):
-                    os.remove(attachment.file_path)
+                # Lấy đường dẫn file từ file_path
+                file_path = attachment.file_path.split('/uploads/')[-1]  # Lấy tên file từ đường dẫn
+                absolute_file_path = os.path.join(os.getcwd(), 'uploads', file_path)  # Tạo đường dẫn tuyệt đối
+
+                # Xóa tệp vật lý nếu tồn tại
+                if os.path.exists(absolute_file_path):
+                    os.remove(absolute_file_path)
+
+                # Xóa bản ghi đính kèm trong DB
                 db.session.delete(attachment)
-            
-            # Xóa nhiệm vụ
+
+            # Sau khi xóa tất cả các đính kèm và task_details, xóa task
             db.session.delete(task)
             db.session.commit()
             return True
+        except IntegrityError as e:  # Bắt lỗi khóa ngoại
+            db.session.rollback()
+            raise ValueError("Không thể xóa task vì có chi tiết công việc liên quan.") from e
         except Exception as e:
             db.session.rollback()
             raise e
+    def count_incomplete_task_details(self, task_id: int) -> int:
+        """Count all task details with status not equal to 'Đã hoàn thành'"""
+        return db.session.query(Task_Detail).filter(
+            Task_Detail.task_id == task_id,
+            Task_Detail.status != 'Đã hoàn thành'
+        ).count()
+

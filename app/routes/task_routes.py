@@ -1,12 +1,13 @@
 from typing import Dict, Any, List 
 from flask import Blueprint, jsonify, request, current_app, send_file
-from ..services import TaskService, UploadService
+from ..services import TaskService, UploadService, UserService
 from ..models import TaskAttachment
 from datetime import datetime
 from .auth_routes import token_required
 
 task_bp = Blueprint('task', __name__, url_prefix='/task')
 task_service = TaskService()
+user_service = UserService()
 upload_service = UploadService()
 
 @task_bp.route('/', methods=['GET'])
@@ -77,7 +78,7 @@ def create_task(current_user):
 @task_bp.route('/<int:task_id>', methods=['GET'])
 def get_task_by_id(task_id):
     try:
-        task = task_service.get_by_id(task_id)
+        task = task_service.get_by_id(task_id)      
         if not task:
             return jsonify({
                 'success': False,
@@ -140,7 +141,11 @@ def delete_task(current_user, task_id):
             'success': True,
             'message': 'Task deleted successfully'
         }), 200
-
+    except ValueError as e:  # Lỗi khóa ngoại
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
@@ -167,3 +172,11 @@ def download_attachment(attachment_id):
             'success': False,
             'error': str(e)
         }), 500
+    
+@task_bp.route('/<int:task_id>/incomplete_details', methods=['GET'])
+def count_incomplete_task_details(task_id):
+    try:
+        count = task_service.count_incomplete_task_details(task_id)
+        return jsonify({'success': True, 'count': count}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
