@@ -151,6 +151,7 @@ class TaskService(ITaskService):
             return self.task_repository.delete(task_id)
         except Exception as e:
             raise Exception(f"Lỗi xóa task: {str(e)}")
+            
     def count_incomplete_task_details(self, task_id: int) -> int:
         """Count all task details with status not equal to 'Đã hoàn thành'"""
         return self.task_repository.count_incomplete_task_details(task_id)
