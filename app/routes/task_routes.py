@@ -172,3 +172,11 @@ def download_attachment(attachment_id):
             'success': False,
             'error': str(e)
         }), 500
+    
+@task_bp.route('/<int:task_id>/incomplete_details', methods=['GET'])
+def count_incomplete_task_details(task_id):
+    try:
+        count = task_service.count_incomplete_task_details(task_id)
+        return jsonify({'success': True, 'count': count}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
