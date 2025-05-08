@@ -4,6 +4,7 @@ from typing import List, Optional
 import os
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
+from ..services.task_detail_services import TaskDetailService
 
 class TaskRepository(ITaskRepository):
     def get_all(self) -> List[Task]:  # Changed from get_all_tasks
@@ -51,43 +52,47 @@ class TaskRepository(ITaskRepository):
             raise e
     
 
+    
+
     def delete(self, task_id: int) -> bool:  
         """Delete a task by ID"""
         task = self.get_by_id(task_id)
         if not task:
-            return False
-        
+            raise ValueError(f"Task với ID {task_id} không tồn tại.")
+
         try:
-            # Xóa tất cả các bản ghi trong bảng task_details liên quan đến task
-            db.session.query(Task_Detail).filter_by(task_id=task_id).delete()
+            # Sử dụng TaskDetailService để xóa các task_detail liên quan
+            task_detail_service = TaskDetailService()
+            task_details = db.session.query(Task_Detail).filter_by(task_id=task_id).all()
+
+            for task_detail in task_details:
+                task_detail_service.delete(task_detail.id)  # Xóa task_detail và assignees liên quan
 
             # Xóa các tệp đính kèm (cả bản ghi trong DB và tệp vật lý nếu cần)
             for attachment in task.attachments:
-                # Lấy đường dẫn file từ file_path
-                file_path = attachment.file_path.split('/uploads/')[-1]  # Lấy tên file từ đường dẫn
-                absolute_file_path = os.path.join(os.getcwd(), 'uploads', file_path)  # Tạo đường dẫn tuyệt đối
+                file_path = attachment.file_path.split('/uploads/')[-1]
+                absolute_file_path = os.path.join(os.getcwd(), 'uploads', file_path)
 
-                # Xóa tệp vật lý nếu tồn tại
                 if os.path.exists(absolute_file_path):
                     os.remove(absolute_file_path)
 
-                # Xóa bản ghi đính kèm trong DB
                 db.session.delete(attachment)
 
-            # Sau khi xóa tất cả các đính kèm và task_details, xóa task
+            # Xóa task
             db.session.delete(task)
             db.session.commit()
             return True
-        except IntegrityError as e:  # Bắt lỗi khóa ngoại
+        except IntegrityError as e:
             db.session.rollback()
-            raise ValueError("Không thể xóa task vì có chi tiết công việc liên quan.") from e
+            raise ValueError("Không thể xóa task vì có ràng buộc khóa ngoại.") from e
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise ValueError(f"Lỗi không xác định khi xóa task: {str(e)}")
     def count_incomplete_task_details(self, task_id: int) -> int:
         """Count all task details with status not equal to 'Hoàn thành'"""
         return db.session.query(Task_Detail).filter(
             Task_Detail.task_id == task_id,
             Task_Detail.status != 'Hoàn thành'
         ).count()
+    
 
