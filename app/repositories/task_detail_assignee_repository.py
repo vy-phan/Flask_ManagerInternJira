@@ -16,6 +16,10 @@ class TaskDetailAssigneeRepository:
         """Get all assignees for a specific task detail"""
         return Task_Detail_Assignees.query.filter_by(task_detail_id=task_detail_id).all()
 
+    def get_by_user_id(self, user_id: int) -> List[Task_Detail_Assignees]:
+        """Get all task details assigned to a specific user"""
+        return Task_Detail_Assignees.query.filter_by(user_id=user_id).all()
+
     def delete(self, assignee_id: int) -> bool:
         """Delete a task detail assignee by ID"""
         assignee = Task_Detail_Assignees.query.get(assignee_id)
@@ -47,5 +51,3 @@ class TaskDetailAssigneeRepository:
         except Exception as e:
             db.session.rollback()
             raise e
-
-# ...existing code...

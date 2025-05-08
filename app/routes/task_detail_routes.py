@@ -118,3 +118,21 @@ def update_task_detail_status(current_user,task_detail_id, status):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
+@task_detail_bp.route('/user/<int:user_id>', methods=['GET'])
+def get_task_details_by_user_id(user_id):
+    try:
+        # First get all task_detail_ids assigned to this user
+        assignees = assignee_repo.get_by_user_id(user_id)
+        
+        # Get all task details for these assignments
+        task_details = []
+        for assignee in assignees:
+            detail = task_detail_service.get_by_id(assignee.task_detail_id)
+            if detail:
+                task_details.append(detail)
+                
+        return jsonify({'success': True, 'data': task_details}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
