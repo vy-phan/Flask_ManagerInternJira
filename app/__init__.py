@@ -19,7 +19,7 @@ def create_app(config_class=Config):
     # Cấu hình thư mục lưu tệp
     UPLOAD_FOLDER = 'uploads'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Giới hạn kích thước tệp: 16MB
+    app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # Giới hạn kích thước tệp: 100MB
 
     # Đảm bảo thư mục uploads tồn tại
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -35,9 +35,10 @@ def create_app(config_class=Config):
     CORS(app, resources={
         r"/api/v1/*": {
             "origins": ["http://localhost:5173"],
-            "methods": ["GET", "POST", "PUT", "DELETE","OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"],
-            "supports_credentials": True
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
+            "supports_credentials": True,
+            "max_age": 86400  # Cache preflight requests for 1 day
         }
     })
     configure_logging(app)
