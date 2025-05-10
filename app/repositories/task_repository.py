@@ -50,8 +50,47 @@ class TaskRepository(ITaskRepository):
         except Exception as e:
             db.session.rollback()
             raise e
+    # Ham xoa tat ca cac attachment cua task
+    #dung de xoa tat ca cac attachment cua task khi cap nhat task
+    # neu khong dung ham nay thi phai xoa tung attachment
+    def delete_all_attachments_by_task_id(self, task_id: int) -> None:
+        """Delete all attachments for a task by task ID"""
+        attachments = TaskAttachment.query.filter_by(task_id=task_id).all()
+        for attachment in attachments:
+            db.session.delete(attachment)
+        db.session.commit()
     
+    # ham xoa mot attachment theo id cua attachment
+    # dung de xoa mot attachment khi cap nhat task
 
+    def delete_attachment_by_id(self, attachment_id: int) -> None:
+        """Delete an attachment by attachment ID"""
+        attachment = TaskAttachment.query.get(attachment_id)
+
+        if attachment:
+            db.session.delete(attachment)
+            db.session.commit()
+            file_path = attachment.file_path.split('/uploads/')[-1]
+            absolute_file_path = os.path.join(os.getcwd(), 'uploads', file_path)
+            if os.path.exists(absolute_file_path):
+                os.remove(absolute_file_path)
+        else:
+            raise ValueError(f"Tệp đính kèm với ID {attachment_id} không tồn tại.")
+    
+    # ham them nhieu attachment cho task theo id cua task
+    # dung de them nhieu attachment cho task khi cap nhat task
+    def add_attachments(self, task_id: int, file_paths: List[str]) -> List[TaskAttachment]:
+        """Add multiple attachments to a task by task ID"""
+        attachments = []
+        for file_path in file_paths:
+            attachment = TaskAttachment(
+                task_id=task_id,
+                file_path=file_path
+            )
+            db.session.add(attachment)
+            attachments.append(attachment)
+        db.session.commit()
+        return attachments
     
 
     def delete(self, task_id: int) -> bool:  

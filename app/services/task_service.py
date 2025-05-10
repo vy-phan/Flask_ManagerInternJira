@@ -155,3 +155,43 @@ class TaskService(ITaskService):
     def count_incomplete_task_details(self, task_id: int) -> int:
         """Count all task details with status not equal to 'Đã hoàn thành'"""
         return self.task_repository.count_incomplete_task_details(task_id)
+    
+    def _format_attachment_data(self, attachment: TaskAttachment) -> Dict[str, Any]:
+        """Format attachment data for API response"""
+        return {
+            'id': attachment.id,
+            'file_path': attachment.file_path,
+            'uploaded_at': attachment.uploaded_at.isoformat() if attachment.uploaded_at else None
+        }
+    def delete_attachment(self, attachment_id: int) -> bool:
+        """Delete an attachment by ID of the task"""
+        try:
+            return self.task_repository.delete_attachment(attachment_id)
+        except Exception as e:
+            raise Exception(f"Lỗi xóa tệp đính kèm: {str(e)}")
+    
+    def add_attachments(self, task_id: int, file_paths: List[str]) -> List[Dict[str, Any]]:
+        """Add multiple attachments to a task by task ID"""
+        try:
+            attachments = self.task_repository.add_attachments(task_id, file_paths)
+            return [self._format_attachment_data(attachment) for attachment in attachments]
+        except Exception as e:
+            raise Exception(f"Error adding attachments: {str(e)}")
+
+    def delete_all_attachments_by_task_id(self, task_id: int) -> bool:
+        """Delete all attachments for a task by task ID"""
+        try:
+            self.task_repository.delete_all_attachments_by_task_id(task_id)
+            return True
+        except Exception as e:
+            raise Exception(f"Error deleting all attachments: {str(e)}")
+
+    def delete_attachment_by_id(self, attachment_id: int) -> bool:
+        """Delete an attachment by its ID"""
+        try:
+            self.task_repository.delete_attachment_by_id(attachment_id)
+            return True
+        except ValueError as ve:
+            raise ve
+        except Exception as e:
+            raise Exception(f"Error deleting attachment: {str(e)}")
