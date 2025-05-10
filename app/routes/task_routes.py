@@ -4,6 +4,7 @@ from ..services import TaskService, UploadService, UserService
 from ..models import TaskAttachment
 from datetime import datetime
 from .auth_routes import token_required
+import os
 
 task_bp = Blueprint('task', __name__, url_prefix='/task')
 task_service = TaskService()
@@ -178,5 +179,50 @@ def count_incomplete_task_details(task_id):
     try:
         count = task_service.count_incomplete_task_details(task_id)
         return jsonify({'success': True, 'count': count}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@task_bp.route('/<int:task_id>/attachments', methods=['POST'])
+@token_required
+def add_attachments(current_user, task_id):
+    try:
+        if not request.files:
+            return jsonify({'success': False, 'error': 'No files provided'}), 400
+
+        # Use UploadService to handle file uploads
+        file_paths = upload_service.upload_files(request, 'attachments')
+        attachments = task_service.add_attachments(task_id, file_paths)
+
+        return jsonify({
+            'success': True,
+            'message': 'Attachments added successfully',
+            'data': attachments
+        }), 201
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@task_bp.route('/<int:task_id>/attachments', methods=['DELETE'])
+@token_required
+def delete_all_attachments(current_user, task_id):
+    try:
+        task_service.delete_all_attachments_by_task_id(task_id)
+        return jsonify({
+            'success': True,
+            'message': 'All attachments deleted successfully'
+        }), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@task_bp.route('/attachments/<int:attachment_id>', methods=['DELETE'])
+@token_required
+def delete_attachment_by_id(current_user, attachment_id):
+    try:
+        task_service.delete_attachment_by_id(attachment_id)
+        return jsonify({
+            'success': True,
+            'message': 'Attachment deleted successfully'
+        }), 200
+    except ValueError as ve:
+        return jsonify({'success': False, 'error': str(ve)}), 404
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
