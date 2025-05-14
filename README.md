@@ -6,25 +6,22 @@
 
 *   **Phân Quyền Dựa Trên Vai Trò:** Các chức năng riêng biệt cho vai trò "Quản lý" và "Thực tập sinh".
 *   **Quản Lý Người Dùng:**
-    *   Form đăng ký riêng cho Quản lý và Thực tập sinh.
-    *   Hệ thống đăng nhập an toàn.
+    *   Form đăng ký riêng cho Quản lý .
+    *   Hệ thống đăng nhập an toàn với access token và refresh token.
     *   (Tùy chọn) Xác thực email cho tài khoản mới.
     *   Quản lý có thể chỉnh sửa thông tin của thực tập sinh (nếu cần).
-*   **Quản Lý Task (Dành cho Quản lý):**
+*   **Quản Lý Task (Dành cho Quản lý hoặc tài khoản Thực tập sinh đã được xác thực):**
     *   Tạo các task chính (task lớn) với các chi tiết như tiêu đề, mô tả, hạn chót và mã task duy nhất.
     *   Chỉnh sửa và xóa các task hiện có.
     *   Tạo các task con chi tiết (task\_details) bên trong một task chính.
 *   **Giao Việc:**
-    *   Giao thực tập sinh tham gia vào các task chính thông qua username của họ.
+    *   Giao thực tập sinh tham gia vào các task chính thông qua id của họ.
     *   Giao các task chi tiết cụ thể cho (các) thực tập sinh chịu trách nhiệm.
 *   **Theo Dõi Tiến Độ:**
     *   Quản lý có thể xem trạng thái tổng thể của các task và các thực tập sinh được giao.
     *   Thực tập sinh xem một bảng điều khiển (dashboard) cá nhân hóa gồm các task và task chi tiết được giao cho họ.
     *   Thực tập sinh có thể cập nhật trạng thái của các task chi tiết được giao cho mình (ví dụ: sử dụng giao diện kéo-thả). Thay đổi trạng thái sẽ được ghi lại thời gian (`updated_at`).
     *   Tự động cập nhật trạng thái của task chính dựa trên việc hoàn thành các task chi tiết của nó.
-*   **(Cải Tiến Có Thể Bổ Sung):**
-    *   Gửi thông báo qua email cho thực tập sinh khi có task mới hoặc deadline sắp đến.
-    *   Chức năng tìm kiếm task (theo tiêu đề, trạng thái).
 
 ## Ngăn Xếp Công Nghệ (Technology Stack)
 
@@ -109,23 +106,69 @@ Cài đặt ứng dụng được quản lý thông qua các biến môi trườ
 
 ## Tóm Tắt Quy Trình Cốt Lõi
 
-1.  Người dùng đăng ký với vai trò "Quản lý" hoặc "Thực tập sinh".
-2.  Quản lý đăng nhập và tạo các "Task" chính (task lớn).
-3.  Quản lý gán "Thực tập sinh" vào các Task này bằng username của họ.
-4.  Quản lý tạo các "Task Chi Tiết" cụ thể bên trong một Task chính và gán (các) Thực tập sinh chịu trách nhiệm.
+1.  QUản lí sẽ đăng kí tài khoản cho người dùng với vai trò "Quản lý" hoặc "Thực tập sinh". 
+2.  Thực tập sinh được quản lí cấp tài khoản đăng nhập và tạo các "Task" chính (task lớn).
+3.  Quản lý giao có quyền tạo Task hoặc Thực tập sinh được xác thực mới có quyền tạo Task .
+4.  Quản lý tạo các "Task Chi Tiết" cụ thể bên trong một Task chính và gán/giao (các) Thực tập sinh các công việc.
 5.  Thực tập sinh đăng nhập, xem các Task Chi Tiết được giao trên dashboard của họ.
-6.  Thực tập sinh cập nhật trạng thái Task Chi Tiết của họ khi có tiến triển (ví dụ: 'Cần làm', 'Đang làm', 'Hoàn thành'). Hành động này cập nhật trạng thái và dấu thời gian `updated_at`.
+6.  Thực tập sinh cập nhật trạng thái Task Chi Tiết của họ khi có tiến triển (ví dụ: 'Đã giao', 'Đang tiến hành', 'Hoàn thành'). Hành động này cập nhật trạng thái và dấu thời gian `updated_at`.
 7.  Hệ thống tự động đánh dấu một Task chính là "Hoàn thành" khi tất cả các Task Chi Tiết liên quan của nó đã hoàn thành. Các Task không có task chi tiết có thể có trạng thái mặc định như "Chờ giao việc".
+8.  Quản lý có thể quản lí các người dùng có trong website 
 
-## Lược Đồ Cơ Sở Dữ Liệu Đề Xuất
+## Lược Đồ Cơ Sở Dữ Liệu
 
-Ứng dụng dự kiến sử dụng các bảng cơ sở dữ liệu cốt lõi sau:
+### 1. Bảng users (Người dùng)
+- **Nội dung chính**: Lưu thông tin tài khoản hệ thống
+- id (Khóa chính)
+- username (Tên đăng nhập, duy nhất)
+- password_hash (Mật khẩu đã mã hóa)
+- email (Email, duy nhất)
+- role (Vai trò: 'MANAGER' - Quản lý hoặc 'INTERN' - Thực tập sinh)
+- created_at (Thời gian tạo)
+- updated_at (Thời gian cập nhật)
+- created_by (Người tạo, tham chiếu đến chính bảng users)
 
-*   **users:** Lưu thông tin người dùng (ID, username, password hash, email, role - Quản lý/Thực tập sinh).
-*   **tasks:** Lưu thông tin về các task chính (ID, task\_code, title, description, deadline, status, created\_at, updated\_at).
-*   **task\_details:** Lưu thông tin về các task con/chi tiết (ID, task\_id (FK tới tasks), title, description, status, created\_at, updated\_at).
-*   **task\_assignees:** Ánh xạ người dùng (Thực tập sinh) vào các task chính mà họ tham gia (task\_id, user\_id).
-*   **task\_detail\_assignees:** Ánh xạ người dùng (Thực tập sinh) vào các task chi tiết cụ thể mà họ chịu trách nhiệm (task\_detail\_id, user\_id).
+### 2. Bảng tasks (Công việc chính)
+- **Nội dung chính**: Quản lý các task lớn, dự án
+- id (Khóa chính)
+- code (Mã task, duy nhất)
+- title (Tiêu đề task)
+- description (Mô tả chi tiết)
+- deadline (Hạn chót)
+- status (Trạng thái: Đã giao - Đang tiến hành - Hoàn thành)
+- created_by (Người tạo, tham chiếu đến users)
+- created_at/updated_at (Thời gian tạo/cập nhật)
+
+### 3. Bảng task_details (Chi tiết công việc)
+- **Nội dung chính**: Các công việc con trong task lớn
+- id (Khóa chính)
+- task_id (Tham chiếu đến tasks)
+- title/description (Thông tin chi tiết)
+- status (Trạng thái: Đã giao - Đang tiến hành - Hoàn thành)
+- deadline (Hạn chót riêng cho task con)
+- created_at/updated_at (Thời gian tạo/cập nhật)
+
+### 4. Bảng task_assignments (Phân công task lớn)
+- **Nội dung chính**: Ai được giao task nào
+- id (Khóa chính)
+- task_id (Tham chiếu đến tasks)
+- user_id (Tham chiếu đến users)
+- assigned_at (Thời gian giao việc)
+- completed_at (Thời gian hoàn thành, có thể null)
+
+### 5. Bảng task_detail_assignments (Phân công task chi tiết)
+- **Nội dung chính**: Ai chịu trách nhiệm task con nào
+- id (Khóa chính)
+- task_detail_id (Tham chiếu đến task_details)
+- user_id (Tham chiếu đến users)
+- assigned_at (Thời gian giao việc)
+- completed_at (Thời gian hoàn thành, có thể null)
+
+### Mối quan hệ giữa các bảng:
+1. Một user có thể tạo nhiều tasks (1-n)
+2. Một task có nhiều task_details (1-n)
+3. Một task có thể giao cho nhiều users (n-n qua task_assignments)
+4. Một task_detail được giao cho 1 hoặc nhiều users (n-n qua task_detail_assignments)
 
 ## Đóng Góp
 
