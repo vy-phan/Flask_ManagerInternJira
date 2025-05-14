@@ -23,7 +23,7 @@ class UploadRepository(IUploadRepository):
                     raise ValueError(f"Failed to save file: {filename}")
                 
                 # Get base URL from environment
-                base_url = os.getenv('API_BASE_URL', 'http://localhost:5000')
+                base_url = os.getenv('API_BASE_URL')
                 file_url = f"{base_url}/api/v1/uploads/{filename}"
                 file_urls.append(file_url)
         return file_urls
