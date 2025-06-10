@@ -105,7 +105,7 @@ def login():
             access_token, 
             httponly=True, 
             secure=True, 
-            samesite='Lax',
+            samesite='None',
             max_age=15*60  # 15 minutes in seconds
         )
         
@@ -115,7 +115,7 @@ def login():
             refresh_token, 
             httponly=True, 
             secure=True, 
-            samesite='Lax',
+            samesite='None',
             max_age=7*24*60*60  # 7 days in seconds
         )
         
@@ -176,7 +176,7 @@ def refresh_token():
         new_access_token, 
         httponly=True, 
         secure=True, 
-        samesite='Lax',
+        samesite='None',
         max_age=15*60  # 15 minutes in seconds
     )
     
